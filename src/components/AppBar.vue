@@ -48,16 +48,15 @@ export default {
 
   data: () => ({
     limit: 10,
-    entries: [],
     model: null,
     search: null
   }),
 
   computed: {
     items() {
-      return this.entries.map(entry => {
-        const name = entry.name;
-        return Object.assign({}, entry, { name });
+      return this.$store.state.searchCache.map(searchItem => {
+        const name = searchItem.name;
+        return Object.assign({}, searchItem, { name });
       });
     }
   },
@@ -73,7 +72,7 @@ export default {
       fetch(`https://nikel.ml/api/courses?name=${val}&limit=${this.limit}`)
         .then(res => res.json())
         .then(res => {
-          this.entries = res["response"];
+          this.$store.state.searchCache = res["response"];
         })
         .catch(err => {
           console.log(err);
