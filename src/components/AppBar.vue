@@ -9,6 +9,7 @@
     <!-- Search bar -->
     <v-autocomplete
       solo
+      autofocus
       v-model="model"
       hide-details
       :items="items"
@@ -22,7 +23,7 @@
     <v-spacer></v-spacer>
 
     <!-- Theme toggle button -->
-    <v-btn @click="$vuetify.theme.dark = !$vuetify.theme.dark" icon>
+    <v-btn @click="toggleTheme" icon>
       <v-icon v-if="$vuetify.theme.dark">
         fas fa-moon
       </v-icon>
@@ -44,6 +45,7 @@
 <script>
 export default {
   name: "AppBar",
+
   data: () => ({
     limit: 10,
     entries: [],
@@ -60,9 +62,14 @@ export default {
     }
   },
 
+  mounted() {
+    if (localStorage.themeDark) {
+      this.$vuetify.theme.dark = localStorage.themeDark === "true";
+    }
+  },
+
   watch: {
     search(val) {
-      console.log("triggered");
       fetch(`https://nikel.ml/api/courses?name=${val}&limit=${this.limit}`)
         .then(res => res.json())
         .then(res => {
@@ -78,6 +85,11 @@ export default {
     searchLabel() {
       const currType = this.$store.state.searchType;
       return `Search ${currType.charAt(0).toUpperCase() + currType.slice(1)}`;
+    },
+
+    toggleTheme() {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+      localStorage.themeDark = this.$vuetify.theme.dark;
     }
   }
 };

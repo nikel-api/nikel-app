@@ -1,11 +1,13 @@
 <template>
   <v-main>
-    <v-row> </v-row>
+    <AppCourse />
   </v-main>
 </template>
 
 <script lang="ts">
+import AppCourse from "@/components/AppCourse.vue";
 export default {
-  name: "AppContent"
+  name: "AppContent",
+  components: { AppCourse }
 };
 </script>
