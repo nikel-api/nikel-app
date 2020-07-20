@@ -10,7 +10,7 @@
     <v-autocomplete
       solo
       autofocus
-      v-model="model"
+      v-model="$store.state.searchSelect"
       hide-details
       :items="items"
       item-text="name"
@@ -43,12 +43,14 @@
 
 <!-- This is still a shitty mess -->
 <script>
+import { mapState } from "vuex";
+import { defaultObject } from "@/utils/helpers";
+
 export default {
   name: "AppBar",
 
   data: () => ({
     limit: 10,
-    model: null,
     search: null
   }),
 
@@ -58,7 +60,8 @@ export default {
         const name = searchItem.name;
         return Object.assign({}, searchItem, { name });
       });
-    }
+    },
+    ...mapState(["searchSelect"])
   },
 
   mounted() {
@@ -69,14 +72,21 @@ export default {
 
   watch: {
     search(val) {
-      fetch(`https://nikel.ml/api/courses?name=${val}&limit=${this.limit}`)
+      const url = val
+        ? `https://nikel.ml/api/courses?name=${val}&limit=${this.limit}`
+        : `https://nikel.ml/api/courses?limit=${this.limit}`;
+      fetch(url)
         .then(res => res.json())
         .then(res => {
-          this.$store.state.searchCache = res["response"];
+          this.$store.state.searchCache = defaultObject(res["response"]);
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    searchSelect() {
+      console.log("check shit");
+      this.$forceUpdate();
     }
   },
 
