@@ -13,7 +13,7 @@
       v-model="$store.state.searchSelect"
       hide-details
       :items="items"
-      item-text="name"
+      item-text="title"
       :placeholder="searchLabel()"
       :search-input.sync="search"
       prepend-inner-icon="fas fa-search"
@@ -50,15 +50,15 @@ export default {
   name: "AppBar",
 
   data: () => ({
-    limit: 10,
+    limit: 6,
     search: null
   }),
 
   computed: {
     items() {
       return this.$store.state.searchCache.map(searchItem => {
-        const name = searchItem.name;
-        return Object.assign({}, searchItem, { name });
+        const title = `${searchItem.code} | ${searchItem.name}`;
+        return Object.assign({}, searchItem, { title });
       });
     },
     ...mapState(["searchSelect"])
@@ -72,17 +72,27 @@ export default {
 
   watch: {
     search(val) {
-      const url = val
-        ? `https://nikel.ml/api/courses?name=${val}&limit=${this.limit}`
-        : `https://nikel.ml/api/courses?limit=${this.limit}`;
-      fetch(url)
-        .then(res => res.json())
-        .then(res => {
-          this.$store.state.searchCache = defaultObject(res["response"]);
-        })
-        .catch(err => {
-          console.log(err);
+      if (val) {
+        Promise.all([
+          fetch(`https://nikel.ml/api/courses?code=${val}&limit=${this.limit}`),
+          fetch(`https://nikel.ml/api/courses?name=${val}&limit=${this.limit}`)
+        ]).then(values => {
+          Promise.all(values.map(value => value.json())).then(jsonValues => {
+            this.$store.state.searchCache = defaultObject(
+              jsonValues[0]["response"]
+            );
+            const tmp = defaultObject(jsonValues[1]["response"]);
+            const itemsLeft = this.limit - this.$store.state.searchCache.length;
+            this.$store.state.searchCache.push(...tmp.slice(0, itemsLeft));
+          });
         });
+      } else {
+        fetch(`https://nikel.ml/api/courses?limit=${this.limit}`)
+          .then(res => res.json())
+          .then(res => {
+            this.$store.state.searchCache = defaultObject(res["response"]);
+          });
+      }
     },
     searchSelect() {
       console.log("check shit");

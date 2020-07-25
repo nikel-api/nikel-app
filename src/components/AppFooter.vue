@@ -1,8 +1,18 @@
 <template>
-  <v-bottom-navigation v-model="bottomNav" color="primary" shift>
-    <v-btn @click="setType('courses')" class="v-btn-custom">
+  <v-bottom-navigation
+    v-model="bottomNav"
+    color="primary"
+    shift
+    mandatory
+    fixed
+  >
+    <v-btn @click="setType('courses')">
       <span>Courses</span>
       <v-icon>fas fa-chalkboard-teacher</v-icon>
+    </v-btn>
+    <v-btn @click="setType('programs')">
+      <span>Programs</span>
+      <v-icon>fas fa-graduation-cap</v-icon>
     </v-btn>
     <v-btn @click="setType('textbooks')">
       <span>Textbooks</span>
@@ -53,7 +63,7 @@ export default {
 
 <style scoped>
 .v-btn--contained {
-  padding: 15px !important;
+  padding: 10px !important;
   min-width: 0 !important;
 }
 </style>
