@@ -1,4 +1,6 @@
-# nikel-app
+# Nikel App
+
+**Attention:** This web app is considered pre-alpha software and is not complete.
 
 ## Project setup
 ```
@@ -19,6 +21,3 @@ npm run build
 ```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
