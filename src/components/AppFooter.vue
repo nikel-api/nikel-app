@@ -63,7 +63,6 @@ export default {
 
 <style scoped>
 .v-btn--contained {
-  padding: 10px !important;
   min-width: 0 !important;
 }
 </style>
