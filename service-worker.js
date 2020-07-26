@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/nikel-app/precache-manifest.57c5fe731118192328c5a27fa417d3c2.js"
+  "/nikel-app/precache-manifest.c09f44866be10173f346e8f9a06a0503.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "nikel-app"});
