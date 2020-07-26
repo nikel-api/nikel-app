@@ -6,3 +6,11 @@ export function defaultObject(data: any) {
       : value;
   return JSON.parse(JSON.stringify(data, replacer));
 }
+
+export function capitalize(text: string) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+export function convertSecsToTime(seconds: number) {
+  return new Date(seconds * 1000).toISOString().substr(11, 5);
+}
