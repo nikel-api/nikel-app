@@ -1,5 +1,5 @@
 <template>
-  <v-container v-show="item" class="pb-16">
+  <v-container v-if="item !== null" class="pb-16">
     <v-row>
       <v-col cols="12" md="8">
         <v-row>

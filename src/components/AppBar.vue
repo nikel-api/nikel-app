@@ -95,7 +95,6 @@ export default {
       }
     },
     searchSelect() {
-      console.log("check shit");
       this.$forceUpdate();
     }
   },
