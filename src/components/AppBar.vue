@@ -72,28 +72,19 @@ export default {
 
   watch: {
     search(val) {
-      if (val) {
-        Promise.all([
-          fetch(`https://nikel.ml/api/courses?code=${val}&limit=${this.limit}`),
-          fetch(`https://nikel.ml/api/courses?name=${val}&limit=${this.limit}`)
-        ]).then(values => {
-          Promise.all(values.map(value => value.json())).then(jsonValues => {
-            this.$store.state.searchCache = defaultObject(
-              jsonValues[0]["response"]
-            );
-            const tmp = defaultObject(jsonValues[1]["response"]);
-            const itemsLeft = this.limit - this.$store.state.searchCache.length;
-            this.$store.state.searchCache.push(...tmp.slice(0, itemsLeft));
-          });
-        });
-      } else {
-        fetch(`https://nikel.ml/api/courses?limit=${this.limit}`)
-          .then(res => res.json())
-          .then(res => {
-            this.$store.state.searchCache = defaultObject(res["response"]);
-          });
+      switch (this.$store.state.searchType) {
+        case "courses":
+          this.fetchQuery(
+            val,
+            [
+              `https://nikel.ml/api/courses?code=${val}&limit=${this.limit}`,
+              `https://nikel.ml/api/courses?name=${val}&limit=${this.limit}`
+            ],
+            `https://nikel.ml/api/courses?limit=${this.limit}`
+          );
       }
     },
+
     searchSelect() {
       this.$forceUpdate();
     }
@@ -108,6 +99,27 @@ export default {
     toggleTheme() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
       localStorage.themeDark = this.$vuetify.theme.dark;
+    },
+
+    fetchQuery(val, arr, def) {
+      if (val) {
+        Promise.all(arr.map(el => fetch(el))).then(values => {
+          Promise.all(values.map(value => value.json())).then(jsonValues => {
+            this.$store.state.searchCache = defaultObject(
+              jsonValues[0]["response"]
+            );
+            const tmp = defaultObject(jsonValues[1]["response"]);
+            const itemsLeft = this.limit - this.$store.state.searchCache.length;
+            this.$store.state.searchCache.push(...tmp.slice(0, itemsLeft));
+          });
+        });
+      } else {
+        fetch(def)
+          .then(res => res.json())
+          .then(res => {
+            this.$store.state.searchCache = defaultObject(res["response"]);
+          });
+      }
     }
   }
 };
